@@ -1,4 +1,4 @@
-const { sequelize } = require('./db');
+const { db } = require('./db');
 const { Band, Musician, Song } = require('./index')
 
 describe('Band, Musician, and Song Models', () => {
@@ -9,12 +9,13 @@ describe('Band, Musician, and Song Models', () => {
         // the 'sync' method will create tables based on the model class
         // by setting 'force:true' the tables are recreated each time the 
         // test suite is run
-        await sequelize.sync({ force: true });
+        await db.sync({ force: true });
     })
 
     test('can create a Band', async () => {
         // TODO - test creating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const testBand = await Band.create({name: 'Deloitte rockettes', genre: 'rock'});
+        expect(testBand).toBeTruthy();
     })
 
     test('can create a Musician', async () => {
@@ -23,9 +24,18 @@ describe('Band, Musician, and Song Models', () => {
         expect(testMusi).toBeTruthy();
     })
 
+    test('can create a Song', async () => {
+        // TODO - test creating a song
+        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+    })
+
     test('can update a Band', async () => {
         // TODO - test updating a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const testBand = await Band.create({name: 'Deloitte rockettes', genre: 'rock'});
+        const updatedBand = await testBand.update({
+            genre: 'jazz'
+        });
+        expect(testBand.genre).toBe('jazz');
     })
 
     test('can update a Musician', async () => {
@@ -35,9 +45,18 @@ describe('Band, Musician, and Song Models', () => {
         expect(createdMusi).toBe(updateMusi);
     })
 
+    test('can update a Song', async () => {
+        // TODO - test updating a song
+        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+    })
+
     test('can delete a Band', async () => {
         // TODO - test deleting a band
-        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+        const testBand = await Band.create({name: 'Deloitte rockettes', genre: 'rock'});
+        const deletedBand = testBand.destroy({
+            where:{genre: 'rock'}
+        })
+        expect(deletedBand).toBeTruthy();
     })
 
     test('can delete a Musician', async () => {
@@ -45,5 +64,10 @@ describe('Band, Musician, and Song Models', () => {
         const createdMusi = await Musician.create({name: "Linkin Park", instrument: "Guitar"});
         const deleteMusi = await createdMusi.destroy();
         expect(createdMusi).toBe(deleteMusi);
+    })
+
+    test('can delete a Song', async () => {
+        // TODO - test deleting a song
+        
     })
 })
