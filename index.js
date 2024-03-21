@@ -6,6 +6,11 @@ Musician.belongsTo(Band);
 Band.hasMany(Musician);
 
 
+Band.belongsToMany(Song, {through: "BandSong"});
+Song.belongsToMany(Band, {through: "BandSong"});
+
+
+
 
 module.exports = {
     Band,
