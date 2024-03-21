@@ -22,6 +22,11 @@ describe('Band, Musician, and Song Models', () => {
         expect('NO TEST').toBe('EXPECTED VALUE HERE');
     })
 
+    test('can create a Song', async () => {
+        // TODO - test creating a song
+        expect('NO TEST').toBe('EXPECTED VALUE HERE');
+    })
+
     test('can update a Band', async () => {
         // TODO - test updating a band
         expect('NO TEST').toBe('EXPECTED VALUE HERE');
