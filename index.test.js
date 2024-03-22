@@ -83,45 +83,74 @@ describe('Band, Musician, and Song Associations', () => {
         await db.sync({ force: true });
     })
 
-test('associations between Song and Band', async () => {
-    const testBand = await Band.create({name: 'Deloitte rockettes', genre: 'rock'});
+    test('associations between Song and Band', async () => {
+        const testBand = await Band.create({name: 'Deloitte rockettes', genre: 'rock'});
 
-    const song1 = await Song.create({name: "girls wanna fun", year: "1983", length: 185});
-    const song2 = await Song.create({name: "We are the champions", year: "1989", length: 165});
+        const song1 = await Song.create({name: "girls wanna fun", year: "1983", length: 185});
+        const song2 = await Song.create({name: "We are the champions", year: "1989", length: 165});
 
-    await testBand.addSong(song1);
-    await testBand.addSong(song2);
+        await testBand.addSong(song1);
+        await testBand.addSong(song2);
 
-    const songsOfTestBand = await testBand.getSongs();
-    expect(songsOfTestBand.length).toBe(2);
-    expect(songsOfTestBand.map(song => song.name)).toContain('girls wanna fun');
-    expect(songsOfTestBand.map(song => song.name)).toContain('We are the champions');
+        const songsOfTestBand = await testBand.getSongs();
+        expect(songsOfTestBand.length).toBe(2);
+        expect(songsOfTestBand.map(song => song.name)).toContain('girls wanna fun');
+        expect(songsOfTestBand.map(song => song.name)).toContain('We are the champions');
 
-    const bandsofSong1 = await song1.getBand();
-    expect(bandsofSong1[0].name).toBe('Deloitte rockettes');
+        const bandsofSong1 = await song1.getBand();
+        expect(bandsofSong1[0].name).toBe('Deloitte rockettes');
 
-    const bandsofSong2 = await song2.getBand();
-    expect(bandsofSong2[0].name).toBe('Deloitte rockettes');
-})
+        const bandsofSong2 = await song2.getBand();
+        expect(bandsofSong2[0].name).toBe('Deloitte rockettes');
+    })
 
-test("add multiple musicians to a band", async () => {
-    // Create some bands
-    const band1 = await Band.create({ name: "Band A", genre: "Rock" });
+    test("add multiple musicians to a band", async () => {
+        // Create some bands
+        const band1 = await Band.create({ name: "Band A", genre: "Rock" });
   
-    // Create at least two musicians
-    const musician1 = await Musician.create({ name: "John Doe", instrument: "Guitar" });
-    const musician2 = await Musician.create({ name: "Jane Smith", instrument: "Drums" });
+        // Create at least two musicians
+        const musician1 = await Musician.create({ name: "John Doe", instrument: "Guitar" });
+        const musician2 = await Musician.create({ name: "Jane Smith", instrument: "Drums" });
   
-    // Add musicians to a band
-    await band1.addMusician([musician1, musician2]);
+        // Add musicians to a band
+        await band1.addMusician([musician1, musician2]);
   
-    // Check if the musicians have been added correctly to the band
-    const musiciansOfBand1 = await band1.getMusicians();
+        // Check if the musicians have been added correctly to the band
+        const musiciansOfBand1 = await band1.getMusicians();
   
-    expect(musiciansOfBand1.length).toBe(2);
-    expect(musiciansOfBand1).toContainEqual(expect.objectContaining({ name: "John Doe" }));
-    expect(musiciansOfBand1).toContainEqual(expect.objectContaining({ name: "Jane Smith" }));
-})
-})
-=======
+        expect(musiciansOfBand1.length).toBe(2);
+        expect(musiciansOfBand1).toContainEqual(expect.objectContaining({ name: "John Doe" }));
+        expect(musiciansOfBand1).toContainEqual(expect.objectContaining({ name: "Jane Smith" }));
+    })
+});
+
+describe("one-to-many association between Band and Musician", () => {
+    beforeAll(async () => {
+        // the 'sync' method will create tables based on the model class
+        // by setting 'force:true' the tables are recreated each time the 
+        // test suite is run
+        await db.sync({ force: true });
+    })
+
+    test("check association of band and musician models", async () => {
+        // Get all bands
+        let bands = await Band.findAll();
+
+        // If there are no bands, create some
+        if (bands.length === 0) {
+            const band1 = await Band.create({ name: "Band A", genre: "Rock" });
+            const band2 = await Band.create({ name: "Band B", genre: "Pop" });
+            bands = [band1, band2];
+        }
+
+        // For each band, check if the musicians have been added correctly
+        for (let band of bands) {
+            // Get musicians of the band
+            const musicians = await band.getMusicians();
+
+            // Check if the musicians have been added correctly to the band
+            expect(musicians).toBeDefined();
+            expect(musicians.length).toBeGreaterThan(0);
+        }
+    });
 });
